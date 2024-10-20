@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 
+import sg.edu.nus.iss.otp_service.Models.Otp;
 import sg.edu.nus.iss.otp_service.Service.OtpService;
 
 @RestController
@@ -19,16 +20,11 @@ public class OtpController {
 
     @PostMapping("/generate")
     public String generateOtp(@RequestParam String email) {
-        String otp = otpService.generateOtp();
-        otpService.sendOtp(email);
-        return "OTP sent to " + email;
+        return otpService.generateAndStoreOtp(email);
     }
 
     @PostMapping("/validate")
-    public String validateOtp(@RequestParam String inputOtp) {
-        if (otpService.validateOtp(inputOtp)) {
-            return "OTP validated successfully.";
-        }
-        return "Invalid or expired OTP.";
+    public String validateOtp(@RequestParam String email, @RequestParam String inputOtp) {
+        return otpService.validateOtp(email, inputOtp); // Return response directly from service
     }
 }
