@@ -1,22 +1,30 @@
 package sg.edu.nus.iss.otp_service.Config;
 
-import com.mongodb.client.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-public class MongoConfig {
+@EnableMongoRepositories(basePackages = "sg.edu.nus.iss.otp_service.Repositories")
+public class MongoConfig extends AbstractMongoClientConfiguration {
 
-    // Define MongoTemplate Bean
-    @Bean
-    public MongoClient mongoClient() {
-        return MongoClients.create("mongodb://localhost:27017"); // Replace with your MongoDB URI
+    @Override
+    protected String getDatabaseName() {
+        return "Shopsmart";
     }
 
     @Bean
-    public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongoClient(), "Shopsmart"); // Replace with your database name
+    public MongoClient mongoClient() {
+        ConnectionString connectionString = new ConnectionString("mongodb+srv://Rishi:rishi@shopsmart.ubphc.mongodb.net/Shopsmart?retryWrites=true&w=majority");
+        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .build();
+
+        return MongoClients.create(mongoClientSettings);
     }
 }
