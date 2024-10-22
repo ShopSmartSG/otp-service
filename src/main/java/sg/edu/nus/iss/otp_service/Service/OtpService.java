@@ -64,7 +64,7 @@ public class OtpService {
         }
 
         if (storedOtp.isExpired()) {
-            otpRepository.delete(storedOtp);  // Delete expired OTP
+            //otpRepository.delete(storedOtp);  // Delete expired OTP
             return "OTP has expired.";
         }
 
