@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "sg.edu.nus.iss.otp_service.Repositories")
+@EnableMongoRepositories(basePackages = "sg.edu.nus.iss.otp_service.repository")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
