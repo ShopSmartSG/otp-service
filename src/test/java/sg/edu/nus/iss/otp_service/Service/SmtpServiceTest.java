@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.mockito.Mockito.*;
 
-public class SmtpServiceTest {
+class SmtpServiceTest {
 
     @Mock
     private JavaMailSender mailSender;
@@ -24,8 +24,8 @@ public class SmtpServiceTest {
     }
 
     @Test
-    public void testSendOtp() {
-        String email = "user@example.com";
+    void sendOtp() {
+        String email = "test@example.com";
         String otp = "123456";
 
         smtpService.sendOtp(email, otp);

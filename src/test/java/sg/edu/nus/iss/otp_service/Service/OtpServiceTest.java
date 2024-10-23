@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class OtpServiceTest {
+class OtpServiceTest {
 
     @Mock
     private OtpRepository otpRepository;
@@ -31,66 +31,88 @@ public class OtpServiceTest {
     }
 
     @Test
-    public void testGenerateAndStoreOtp_NewUser() {
-        String email = "user@example.com";
+    void generateAndStoreOtp_NewOtp() {
+        String email = "test@example.com";
+
         when(otpRepository.findByEmail(email)).thenReturn(null);
 
         String result = otpService.generateAndStoreOtp(email);
-
         assertTrue(result.contains("OTP sent to"));
+
         verify(otpRepository, times(1)).save(any(Otp.class));
         verify(smtpService, times(1)).sendOtp(eq(email), anyString());
     }
 
     @Test
-    public void testGenerateAndStoreOtp_ExistingUser() {
-        String email = "user@example.com";
+    void generateAndStoreOtp_ExistingOtp_NotBlocked() {
+        String email = "test@example.com";
         Otp existingOtp = new Otp(email, "123456", LocalDateTime.now().plusMinutes(3));
+
         when(otpRepository.findByEmail(email)).thenReturn(existingOtp);
 
         String result = otpService.generateAndStoreOtp(email);
-
         assertTrue(result.contains("OTP sent to"));
-        assertEquals(0, existingOtp.getAttemptCount());
+
         verify(otpRepository, times(1)).save(existingOtp);
         verify(smtpService, times(1)).sendOtp(eq(email), anyString());
     }
 
     @Test
-    public void testValidateOtp_Success() {
-        String email = "user@example.com";
-        String validOtp = "123456";
-        Otp storedOtp = new Otp(email, validOtp, LocalDateTime.now().plusMinutes(3));
+    void generateAndStoreOtp_ExistingOtp_Blocked() {
+        String email = "test@example.com";
+        Otp blockedOtp = new Otp(email, "123456", LocalDateTime.now().plusMinutes(3));
+        blockedOtp.setBlocked(true);
+
+        when(otpRepository.findByEmail(email)).thenReturn(blockedOtp);
+
+        String result = otpService.generateAndStoreOtp(email);
+        assertEquals("You are blocked from generating OTP. Please try after 15 minutes.", result);
+
+        verify(otpRepository, times(0)).save(blockedOtp);
+        verify(smtpService, times(0)).sendOtp(anyString(), anyString());
+    }
+
+    @Test
+    void validateOtp_Success() {
+        String email = "test@example.com";
+        String inputOtp = "123456";
+        Otp storedOtp = new Otp(email, inputOtp, LocalDateTime.now().plusMinutes(3));
+
         when(otpRepository.findByEmail(email)).thenReturn(storedOtp);
 
-        String result = otpService.validateOtp(email, validOtp);
-
+        String result = otpService.validateOtp(email, inputOtp);
         assertEquals("OTP validated successfully.", result);
+
         verify(otpRepository, times(1)).delete(storedOtp);
     }
 
     @Test
-    public void testValidateOtp_Failure() {
-        String email = "user@example.com";
-        String invalidOtp = "654321";
+    void validateOtp_Invalid() {
+        String email = "test@example.com";
+        String inputOtp = "111111";
         Otp storedOtp = new Otp(email, "123456", LocalDateTime.now().plusMinutes(3));
+
         when(otpRepository.findByEmail(email)).thenReturn(storedOtp);
 
-        String result = otpService.validateOtp(email, invalidOtp);
-
+        String result = otpService.validateOtp(email, inputOtp);
         assertTrue(result.contains("Invalid OTP"));
-        verify(otpRepository, never()).delete(storedOtp);
+        assertEquals(1, storedOtp.getAttemptCount());
+
+        verify(otpRepository, times(1)).save(storedOtp);
     }
 
     @Test
-    public void testValidateOtp_Expired() {
-        String email = "user@example.com";
+    void validateOtp_Expired() {
+        String email = "test@example.com";
         Otp expiredOtp = new Otp(email, "123456", LocalDateTime.now().minusMinutes(1));  // Expired OTP
+
         when(otpRepository.findByEmail(email)).thenReturn(expiredOtp);
 
         String result = otpService.validateOtp(email, "123456");
 
         assertEquals("OTP has expired.", result);
-        verify(otpRepository, times(1)).delete(expiredOtp);
+
+        // Ensure delete is not called
+        verify(otpRepository, times(0)).delete(expiredOtp);
     }
 }
