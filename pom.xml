@@ -91,6 +91,12 @@
 			<artifactId>jacoco-maven-plugin</artifactId>
 			<version>0.8.12</version>
 		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>5.2</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import sg.edu.nus.iss.otp_service.service.OtpService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,8 +29,8 @@ class OtpControllerTest {
         String email = "test@example.com";
         when(otpService.generateAndStoreOtp(email)).thenReturn("OTP sent to " + email);
 
-        String response = otpController.generateOtp(email);
-        assertEquals("OTP sent to " + email, response);
+        ResponseEntity<String> response = otpController.generateOtp(email);
+        assertEquals("OTP sent to " + email, response.getBody());
 
         verify(otpService, times(1)).generateAndStoreOtp(email);
     }
@@ -40,8 +41,8 @@ class OtpControllerTest {
         String otp = "123456";
         when(otpService.validateOtp(email, otp)).thenReturn("OTP validated successfully.");
 
-        String response = otpController.validateOtp(email, otp);
-        assertEquals("OTP validated successfully.", response);
+        ResponseEntity<String> response = otpController.validateOtp(email, otp);
+        assertEquals("OTP validated successfully.", response.getBody());
 
         verify(otpService, times(1)).validateOtp(email, otp);
     }
