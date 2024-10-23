@@ -60,8 +60,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t shopsmartsg/product-service .
-          docker tag shopsmartsg/product-service:latest ${{ secrets.ECR_REPO_URI }}:latest
+          docker build -t shopsmartsg/otp-service .
+          docker tag shopsmartsg/otp-service:latest ${{ secrets.ECR_REPO_URI }}:latest
 
       - name: Push to ECR
         run: |
