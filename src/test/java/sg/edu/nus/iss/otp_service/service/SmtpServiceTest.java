@@ -1,4 +1,4 @@
-package sg.edu.nus.iss.otp_service.Service;
+package sg.edu.nus.iss.otp_service.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

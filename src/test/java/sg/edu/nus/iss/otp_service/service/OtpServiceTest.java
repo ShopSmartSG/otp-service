@@ -1,15 +1,14 @@
-package sg.edu.nus.iss.otp_service.Service;
+package sg.edu.nus.iss.otp_service.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import sg.edu.nus.iss.otp_service.Models.Otp;
-import sg.edu.nus.iss.otp_service.Repositories.OtpRepository;
+import sg.edu.nus.iss.otp_service.model.Otp;
+import sg.edu.nus.iss.otp_service.repository.OtpRepository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

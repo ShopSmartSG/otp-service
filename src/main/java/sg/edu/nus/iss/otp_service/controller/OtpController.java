@@ -1,9 +1,9 @@
-package sg.edu.nus.iss.otp_service.Controllers;
+package sg.edu.nus.iss.otp_service.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sg.edu.nus.iss.otp_service.Service.OtpService;
+import sg.edu.nus.iss.otp_service.service.OtpService;
 
 @RestController
 @RequestMapping("/api/otp")

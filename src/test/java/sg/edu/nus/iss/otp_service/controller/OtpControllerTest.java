@@ -1,12 +1,11 @@
-package sg.edu.nus.iss.otp_service.Controllers;
+package sg.edu.nus.iss.otp_service.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
-import sg.edu.nus.iss.otp_service.Service.OtpService;
+import sg.edu.nus.iss.otp_service.service.OtpService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;

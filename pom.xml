@@ -118,6 +118,8 @@
 						<exclude>sg/edu/nus/iss/otp_service/OtpServiceApplication.class</exclude>
 						<!-- Exclude all classes in the model package from code coverage -->
 						<exclude>sg/edu/nus/iss/otp_service/model/**</exclude>
+						<exclude>sg/edu/nus/iss/otp_service/repository/**</exclude>
+						<exclude>sg/edu/nus/iss/otp_service/config/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>

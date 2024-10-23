@@ -1,4 +1,4 @@
-package sg.edu.nus.iss.otp_service.Config;
+package sg.edu.nus.iss.otp_service.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

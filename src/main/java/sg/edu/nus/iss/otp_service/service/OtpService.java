@@ -1,11 +1,11 @@
-package sg.edu.nus.iss.otp_service.Service;
+package sg.edu.nus.iss.otp_service.service;
 
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sg.edu.nus.iss.otp_service.Models.Otp;
-import sg.edu.nus.iss.otp_service.Repositories.OtpRepository;
+import sg.edu.nus.iss.otp_service.model.Otp;
+import sg.edu.nus.iss.otp_service.repository.OtpRepository;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;

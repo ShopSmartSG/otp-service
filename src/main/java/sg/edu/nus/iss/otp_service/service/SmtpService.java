@@ -1,4 +1,4 @@
-package sg.edu.nus.iss.otp_service.Service;
+package sg.edu.nus.iss.otp_service.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

@@ -1,4 +1,4 @@
-package sg.edu.nus.iss.otp_service.Models;
+package sg.edu.nus.iss.otp_service.model;
 
 
 import org.springframework.data.annotation.Id;
