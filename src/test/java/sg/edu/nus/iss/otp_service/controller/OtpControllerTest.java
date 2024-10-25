@@ -25,7 +25,7 @@ class OtpControllerTest {
     }
 
     @Test
-    void generateOtp() {
+    void generateOtp() throws Exception {
         String email = "test@example.com";
         when(otpService.generateAndStoreOtp(email)).thenReturn("OTP sent to " + email);
 
@@ -36,7 +36,7 @@ class OtpControllerTest {
     }
 
     @Test
-    void validateOtp() {
+    void validateOtp() throws Exception {
         String email = "test@example.com";
         String otp = "123456";
         when(otpService.validateOtp(email, otp)).thenReturn("OTP validated successfully.");

@@ -30,7 +30,7 @@ class OtpServiceTest {
     }
 
     @Test
-    void generateAndStoreOtp_NewOtp() {
+    void generateAndStoreOtp_NewOtp() throws Exception {
         String email = "test@example.com";
 
         when(otpRepository.findByEmail(email)).thenReturn(null);
@@ -43,7 +43,7 @@ class OtpServiceTest {
     }
 
     @Test
-    void generateAndStoreOtp_ExistingOtp_NotBlocked() {
+    void generateAndStoreOtp_ExistingOtp_NotBlocked() throws Exception {
         String email = "test@example.com";
         Otp existingOtp = new Otp(email, "123456", LocalDateTime.now().plusMinutes(3));
 
@@ -57,22 +57,24 @@ class OtpServiceTest {
     }
 
     @Test
-    void generateAndStoreOtp_ExistingOtp_Blocked() {
+    void generateAndStoreOtp_ExistingOtp_Blocked() throws Exception {
         String email = "test@example.com";
         Otp blockedOtp = new Otp(email, "123456", LocalDateTime.now().plusMinutes(3));
         blockedOtp.setBlocked(true);
 
         when(otpRepository.findByEmail(email)).thenReturn(blockedOtp);
 
-        String result = otpService.generateAndStoreOtp(email);
-        assertEquals("You are blocked from generating OTP. Please try after 15 minutes.", result);
+        Exception exception = assertThrows(Exception.class, () -> {
+            otpService.generateAndStoreOtp(email);
+        });
+        assertEquals("You are blocked from generating OTP. Please try after 15 minutes.", exception.getMessage());
 
         verify(otpRepository, times(0)).save(blockedOtp);
         verify(smtpService, times(0)).sendOtp(anyString(), anyString());
     }
 
     @Test
-    void validateOtp_Success() {
+    void validateOtp_Success() throws Exception {
         String email = "test@example.com";
         String inputOtp = "123456";
         Otp storedOtp = new Otp(email, inputOtp, LocalDateTime.now().plusMinutes(3));
@@ -86,30 +88,33 @@ class OtpServiceTest {
     }
 
     @Test
-    void validateOtp_Invalid() {
+    void validateOtp_Invalid() throws Exception {
         String email = "test@example.com";
         String inputOtp = "111111";
         Otp storedOtp = new Otp(email, "123456", LocalDateTime.now().plusMinutes(3));
 
         when(otpRepository.findByEmail(email)).thenReturn(storedOtp);
 
-        String result = otpService.validateOtp(email, inputOtp);
-        assertTrue(result.contains("Invalid OTP"));
+        Exception exception = assertThrows(Exception.class, () -> {
+            otpService.validateOtp(email, inputOtp);
+        });
+        assertEquals("Invalid OTP. Attempt 1 of 3.", exception.getMessage());
         assertEquals(1, storedOtp.getAttemptCount());
 
         verify(otpRepository, times(1)).save(storedOtp);
     }
 
     @Test
-    void validateOtp_Expired() {
+    void validateOtp_Expired() throws Exception {
         String email = "test@example.com";
         Otp expiredOtp = new Otp(email, "123456", LocalDateTime.now().minusMinutes(1));  // Expired OTP
 
         when(otpRepository.findByEmail(email)).thenReturn(expiredOtp);
 
-        String result = otpService.validateOtp(email, "123456");
-
-        assertEquals("OTP has expired.", result);
+        Exception exception = assertThrows(Exception.class, () -> {
+            otpService.validateOtp(email, "123456");
+        });
+        assertEquals("OTP has expired.", exception.getMessage());
 
         // Ensure delete is not called
         verify(otpRepository, times(0)).delete(expiredOtp);
