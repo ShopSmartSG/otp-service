@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.iss.otp_service.service.OtpService;
 
 @RestController
-@RequestMapping("/api/otp")
+@RequestMapping("/otp")
 public class OtpController {
 
     Logger logger = LoggerFactory.getLogger(OtpController.class);
