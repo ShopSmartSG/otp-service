@@ -2,9 +2,9 @@ name: SAST Scan
 
 on:
   push:
-    branches: [main, feature/*]
+    branches: feature/shopsmart-72
   pull_request:
-    branches: [main]
+    branches: main
 
 jobs:
   sast:
