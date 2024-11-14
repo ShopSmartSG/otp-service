@@ -46,4 +46,30 @@ class OtpControllerTest {
 
         verify(otpService, times(1)).validateOtp(email, otp);
     }
+
+    @Test
+    void generateOtpError() throws Exception {
+        String email = "test@example.com";
+        when(otpService.generateAndStoreOtp(email)).thenThrow(new RuntimeException("Error"));
+
+        ResponseEntity<String> response = otpController.generateOtp(email);
+        assertEquals("Error generating OTP", response.getBody());
+        assertEquals(500, response.getStatusCodeValue());
+
+        verify(otpService, times(1)).generateAndStoreOtp(email);
+    }
+
+    @Test
+    void validateOtpError() throws Exception {
+        String email = "test@example.com";
+        String otp = "123456";
+        when(otpService.validateOtp(email, otp)).thenThrow(new RuntimeException("Error"));
+
+        ResponseEntity<String> response = otpController.validateOtp(email, otp);
+        assertEquals("Error validating OTP", response.getBody());
+        assertEquals(500, response.getStatusCodeValue());
+
+        verify(otpService, times(1)).validateOtp(email, otp);
+    }
+
 }
