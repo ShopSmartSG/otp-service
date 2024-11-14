@@ -2,6 +2,7 @@ package sg.edu.nus.iss.otp_service.service;
 
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +36,14 @@ public class OtpService {
     }
 
     // Generate and store OTP for a given email
-    public String generateAndStoreOtp(String email) {
+    public String generateAndStoreOtp(String email) throws Exception {
         // Check if an OTP already exists for the user
         Otp existingOtp = otpRepository.findByEmail(email);
         try{
             if (existingOtp != null) {
                 if (existingOtp.isBlocked()) {
                     logger.error("User is blocked from generating OTP");
-                    return "You are blocked from generating OTP. Please try after 15 minutes.";
+                    throw new Exception("You are blocked from generating OTP. Please try after 15 minutes.");
                 }
                 existingOtp.setCode(generateOtp());
                 existingOtp.setExpirationTime(LocalDateTime.now().plusMinutes(3));  // Reset expiration time
@@ -58,32 +59,32 @@ public class OtpService {
                 smtpService.sendOtp(email, newOtp.getCode());  // Send OTP via email
             }
             logger.info("OTP sent to email: " + email);
+            return "OTP sent to " + email;
         }catch (Exception e){
             logger.error("Error in generateAndStoreOtp", e.getMessage());
+            throw e;
         }
-
-        return "OTP sent to " + email;
     }
 
     // Validate OTP for the user
-    public String validateOtp(String email, String inputOtp) {
+    public String validateOtp(String email, String inputOtp) throws Exception {
         Otp storedOtp = otpRepository.findByEmail(email);  // Retrieve OTP from database
 
         try{
             if (storedOtp == null) {
                 logger.error("No OTP found for the provided email.");
-                return "No OTP found for the provided email.";
+                throw new Exception("No OTP found for the provided email.");
             }
 
             if (storedOtp.isExpired()) {
                 logger.error("OTP has expired.");
                 //otpRepository.delete(storedOtp);  // Delete expired OTP
-                return "OTP has expired.";
+                throw new Exception("OTP has expired.");
             }
 
             if (storedOtp.isBlocked()) {
                 logger.error("User is blocked from validating OTP");
-                return "You are currently blocked from validating OTP. Please try after 15 minutes";
+                throw new Exception("You are blocked from validating OTP. Please try after 15 minutes.");
             }
 
             if (storedOtp.getCode().equals(inputOtp)) {
@@ -94,11 +95,11 @@ public class OtpService {
                 storedOtp.incrementAttempts();  // Increment attempts for invalid OTP
                 otpRepository.save(storedOtp);
                 logger.error("Invalid OTP. Attempt " + storedOtp.getAttemptCount() + " of 3.");
-                return "Invalid OTP. Attempt " + storedOtp.getAttemptCount() + " of 3.";
+                throw new Exception("Invalid OTP. Attempt " + storedOtp.getAttemptCount() + " of 3.");
             }
         }catch (Exception e){
             logger.error("Error in validateOtp", e.getMessage());
-            return "Error in validateOtp";
+            throw e;
         }
     }
 }
